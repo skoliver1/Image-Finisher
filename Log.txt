@@ -1,0 +1,66 @@
+Version Notes
+1.2.0.7
+	added 800 minis
+	working on building an auto-updater
+	removed Windows 8 from specific support
+
+1.2.0.6
+	Removed unnecessary drivers for Windows 10 OS
+	Removed Revolve as supported computer
+	removed wifi pieces.  This will only work automatically via Ethernet
+	trying to future-proof.  This can run for any Windows 10 computer, but only supported computers will get BIOS updated
+	Windows 7 activation will be manual process
+	checks to see if the Produkey file is there
+
+1.2.0.5
+	added 1040 G2 and G3
+
+1.2.0.4
+	Updated Revolve BIOS installer and re-added hotkey installers on Revolve
+
+v1.2.0.3
+	added 7440
+
+v1.2.0.2
+	changed Win7 activation process since that powershell command doesn't work on that OS
+	save previous Guest wifi password, just in case you're doing a bunch in a row
+	changed supported machines layout
+
+v1.2.0.1
+	adding 7250
+	removed the re-enabling of the Start screen at logon.  It's stupidwhy have it?
+	
+v1.2.0.0
+	adding Revolve G2, Dell 9010, 9020 and 3330
+	Moved the Compatibility up front, so it checks if the model is even worth going further
+	Changed working directory to the flash drive
+	Changed driver installation to command line, installing INF files
+	Changed the Activation to see if there is an active network connection first, then see if wifi is an option or not
+	added support for Windows 7 as well as 8.1
+	SystemInfo loaded to registry
+	
+v1.1.0.5
+	adding Revolve G3 to the mix
+	set working directory as C:\Temp if we're under way
+	Changed the driver part to wait to see the "&Close" button, in case the driver is already up-to-date
+	Added new 'place' so it can go straight to the drivers if I'm testing
+	Changing the WinWait options to look for the button, e.g. &Next
+	
+v1.1.0.4
+	Changing name from "Revolve Image" to "Image Finisher"
+	Adding Dell 7240 as an option
+	Changed from being compiled to non, for easier editing.  Kicked off with BAT file
+	Cleanup is now handled a bit differently
+
+v1.1.0.3
+	forgot to adjust the version info, so I've added it as a variable
+
+v.1.1.0.2
+	changed the wait time of the key activation back to 10 seconds
+	made the activation go to ping to check for internet connection, before entering the key
+
+v.1.1.0.1 
+	changed script name from absolute name to a_scriptName
+	revised starting msgbox prompt
+	removed the "look for Start menu" at the beginning of each subroutine due to disabling Start Menu on startup
+	during Activation check, removed "IfInString Clipboard, Notification mode", just in case the verbiage is different for some reason.
