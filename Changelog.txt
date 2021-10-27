@@ -1,4 +1,13 @@
 Version Notes
+2021.10.27
+	Removed support for the following models
+		Dell Latitude 3330
+		Dell Latitude E7440
+		Dell Optiplex 9010
+		Dell 3600
+	Added HP EliteBook x360 1030 G2
+	Automated the BIOS update process
+
 1.2.0.7
 	added 800 minis
 	working on building an auto-updater

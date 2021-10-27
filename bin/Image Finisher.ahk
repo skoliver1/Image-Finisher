@@ -1,77 +1,11 @@
 #SingleInstance force
+#NoEnv
+
 D := SubStr(A_ScriptFullPath, 1, 1)
-version = v1.2.0.7
-Title = Image Finisher %version%
+version := "v2021.10.27"
+Title := "Image Finisher " version
 SetTitleMatchMode Slow
-MyDir = %D%:\Files
-
-; Version Notes
-; 1.2.0.7
-	; added 800 minis
-	; working on building an auto-updater
-	; removed Windows 8 from specific support
-
-; 1.2.0.6
-	; Removed unnecessary drivers for Windows 10 OS
-	; Removed Revolve as supported computer
-	; removed wifi pieces.  This will only work automatically via Ethernet
-	; trying to future-proof.  This can run for any Windows 10 computer, but only supported computers will get BIOS updated
-	; Windows 7 activation will be manual process
-	; checks to see if the Produkey file is there
-
-; 1.2.0.5
-	; added 1040 G2 and G3
-
-; 1.2.0.4
-	; Updated Revolve BIOS installer and re-added hotkey installers on Revolve
-
-; v1.2.0.3
-	; added 7440
-
-; v1.2.0.2
-	; changed Win7 activation process since that powershell command doesn't work on that OS
-	; save previous Guest wifi password, just in case you're doing a bunch in a row
-	; changed supported machines layout
-
-; v1.2.0.1
-	; adding 7250
-	; removed the re-enabling of the Start screen at logon.  It's stupid; why have it?
-	
-; v1.2.0.0
-	; adding Revolve G2, Dell 9010, 9020 and 3330
-	; Moved the Compatibility up front, so it checks if the model is even worth going further
-	; Changed working directory to the flash drive
-	; Changed driver installation to command line, installing INF files
-	; Changed the Activation to see if there is an active network connection first, then see if wifi is an option or not
-	; added support for Windows 7 as well as 8.1
-	; SystemInfo loaded to registry
-	
-; v1.1.0.5
-	; adding Revolve G3 to the mix
-	; set working directory as C:\Temp if we're under way
-	; Changed the driver part to wait to see the "&Close" button, in case the driver is already up-to-date
-	; Added new 'place' so it can go straight to the drivers if I'm testing
-	; Changing the WinWait options to look for the button, e.g. &Next
-	
-; v1.1.0.4
-	; -Changing name from "Revolve Image" to "Image Finisher"
-	; -Adding Dell 7240 as an option
-	; -Changed from being compiled to non, for easier editing.  Kicked off with BAT file
-	; -Cleanup is now handled a bit differently
-
-; v1.1.0.3
-	; -forgot to adjust the version info, so I've added it as a variable
-
-; v.1.1.0.2
-	; -changed the wait time of the key activation back to 10 seconds
-	; -made the activation go to ping to check for internet connection, before entering the key
-
-; v.1.1.0.1 
-	; -changed script name from absolute name to a_scriptName
-	; -revised starting msgbox prompt
-	; -removed the "look for Start menu" at the beginning of each subroutine due to disabling Start Menu on startup
-	; -during Activation check, removed "IfInString Clipboard, Notification mode", just in case the verbiage is different for some reason.
-
+MyDir := D ":\Files"
 
 if !(A_IsAdmin)
 {
@@ -89,14 +23,8 @@ if (InitialRun = "")
 	
 	If InStr(SystemInfo, "7240")
 		Model = 7240
-	else If InStr(SystemInfo, "Latitude E7440")
-		Model = 7440
 	else If InStr(SystemInfo, "OptiPlex 9020")
 		Model = 9020
-	else If InStr(SystemInfo, "OptiPlex 9010")
-		Model = 9010
-	else If InStr(SystemInfo, "Latitude 3330")
-		Model = 3330
 	else If InStr(SystemInfo, "Latitude E7250")
 		Model = 7250
 	else If InStr(SystemInfo, "Folio 1040")
@@ -105,10 +33,6 @@ if (InitialRun = "")
 		Model = 1600
 	else If InStr(SystemInfo, "T1650")
 		Model = 1650
-	else If InStr(SystemInfo, "3600")
-		Model = 3600
-	else If InStr(SystemInfo, "3330")
-		Model = 3330
 	else If InStr(SystemInfo, "800 G1 DM")
 		Model = 800g1
 	else If InStr(SystemInfo, "800 G2 DM")
@@ -117,6 +41,8 @@ if (InitialRun = "")
 		Model = 800g3
 	else If InStr(SystemInfo, "800 G4 DM")
 		Model = 800g4
+	else If InStr(SystemInfo, "HP EliteBook x360 1030 G2")
+		Model = 360G2
 
 	If !InStr(SystemInfo, "Windows 10")
 	{
@@ -131,7 +57,7 @@ if (InitialRun = "")
 RegRead Place, HKCU, Software\OSteve Productions, LastDone
 if (Place = "")
 {
-	MsgBox, 68, Image Finisher %version%, `*`*Supported computers that will receive a BIOS update (if necessary):`nHP 1040 G2`, 1040 G3`, 800 G1`, 800 G2`, 800 G3`, 800 G4`nDell 9010`, 9020`, 7240`, 7250`, 7440`, 3330`n`nThis program will automate the setup of any computer intended for resale after imaging`, as long as it supports the latest Windows 10 image.  Older OS versions will only work for specific computer models.`nPress CapsLock at any point to kill the script.`n`nOnce you've started`, you may need to finish up a BIOS update and eventually`, shut the computer down.  So once we start`, leave the mouse and keyboard alone unless prompted.`n`n`nReady to start?
+	MsgBox, 68, Image Finisher %version%, `*`*Supported computers that will receive a BIOS update (if necessary):`nHP 1040 G2`, 1040 G3`, 800 G1`, 800 G2`, 800 G3`, 800 G4`nx360 1030 G2`nDell 9020`, 7240`, 7250`n`nThis program will automate the setup of any computer intended for resale after imaging`, as long as it supports the latest Windows 10 image.  Older OS versions will only work for specific computer models.`nPress CapsLock at any point to kill the script.`n`nOnce you've started`, you may need to finish up a BIOS update and eventually`, shut the computer down.  So once we start`, leave the mouse and keyboard alone unless prompted.`n`n`nReady to start?
 	IfMsgBox Yes
 	{
 		FileCreateShortcut, %D%:\RunMe.bat, %A_Startup%\Shortcut.lnk, %D%:\,,,,,, 7 ; make this run at startup
@@ -180,7 +106,7 @@ if A_OSVersion in WIN_7,WIN_8,WIN_8.1,WIN_VISTA,WIN_XP ; this is not an expressi
 {
 	Run cmd.exe
 	WinWaitActive ahk_exe cmd.exe
-	SendInput SystemInfo > %a_Temp%\OSName.txt{Enter}
+	SendInput SystemInfo > %A_Temp%\OSName.txt{Enter}
 	Sleep 500
 	Process WaitClose, SystemInfo.exe
 	WinClose ahk_exe cmd.exe
@@ -188,7 +114,7 @@ if A_OSVersion in WIN_7,WIN_8,WIN_8.1,WIN_VISTA,WIN_XP ; this is not an expressi
 }
 else
 {
-	Run cmd.exe /c SystemInfo.exe > %a_Temp%\OSName.txt,, hide
+	Run cmd.exe /c SystemInfo.exe > %A_Temp%\OSName.txt,, hide
 	Sleep 500
 	Process WaitClose, SystemInfo.exe
 	FileRead SystemInfo, %A_Temp%\OSName.txt
@@ -219,7 +145,7 @@ ExitApp
 
 2-Drivers:
 Sleep 5000
-Run %MyDir%\bin\caffeine.exe
+Run caffeine.exe, %MyDir%\bin
 If InStr(SystemInfo, "Windows 10")
 {
 	Loop, Files, %D%:\*, DR ; finding the SXS folder path
@@ -269,10 +195,8 @@ If InStr(SystemInfo, "Windows 7")
 	DriverPath = 
 	if (Model = "9020")
 		DriverPath = %MyDir%\Dell-9020\9020-7
-	if (Model = "9010")
-		DriverPath = %MyDir%\Dell-9010\9010-7
-	if (Model = "1600" or Model = "1650" or Model = "3600")
-		DriverPath = %MyDir%\Dell-1600 1650 3600\7
+	if (Model = "1600" or Model = "1650")
+		DriverPath = %MyDir%\Dell-1600 1650\7
 
 	if (DriverPath)
 	{
@@ -341,31 +265,16 @@ if (Model = "7240")
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	Run %MyDir%\Dell-7240\E7240A27.exe
-	WinWait BIOS Update Program, utility will update the system
-	WinActivate BIOS Update Program, utility will update the system
-	Send {Enter}
-	WinWait Confirm BIOS Replacement, Do you wish
-	WinActivate Confirm BIOS Replacement, Do you wish
-	Send {Enter}
+	Run E7240A27.exe /s /r /l="%A_Temp%\BIOS-Update.log", %MyDir%\Dell-7240
+	Gosub, myGui
+	; WinWait BIOS Update Program, utility will update the system
+	; WinActivate BIOS Update Program, utility will update the system
+	; Send {Enter}
+	; WinWait Confirm BIOS Replacement, Do you wish
+	; WinActivate Confirm BIOS Replacement, Do you wish
+	; Send {Enter}
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
-	ExitApp
-}
-else if (Model = "7440")
-{
-	If InStr(SystemInfo, "Dell Inc. A25")
-	{
-		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
-		gosub 4-Activate
-	}
-	Run %MyDir%\Dell-7440\E7440A25.exe
-	WinWait BIOS Update Program, utility will update the system
-	WinActivate BIOS Update Program, utility will update the system
-	Send {Enter}
-	WinWait Confirm BIOS Replacement, Do you wish
-	WinActivate Confirm BIOS Replacement, Do you wish
-	Send {Enter}
-	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if (Model = "9020")
@@ -375,48 +284,16 @@ else if (Model = "9020")
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	Run %MyDir%\Dell-9020\O9020A25.exe
-	WinWait BIOS Update Program, utility will update the system
-	WinActivate BIOS Update Program, utility will update the system
-	Send {Enter}
-	WinWait Confirm BIOS Replacement, Do you wish
-	WinActivate Confirm BIOS Replacement, Do you wish
-	Send {Enter}
+	Run O9020A25.exe /s /r /l="%A_Temp%\BIOS-Update.log", %MyDir%\Dell-9020
+	Gosub, myGui
+	; WinWait BIOS Update Program, utility will update the system
+	; WinActivate BIOS Update Program, utility will update the system
+	; Send {Enter}
+	; WinWait Confirm BIOS Replacement, Do you wish
+	; WinActivate Confirm BIOS Replacement, Do you wish
+	; Send {Enter}
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
-	ExitApp
-}
-else if (Model = "9010")
-{
-	If InStr(SystemInfo, "Dell Inc. A30")
-	{
-		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
-		gosub 4-Activate
-	}
-	Run %MyDir%\Dell-9010\9010 BIOS A30.exe
-	WinWait BIOS Update Program, utility will update the system
-	WinActivate BIOS Update Program, utility will update the system
-	Send {Enter}
-	WinWait Confirm BIOS Replacement, Do you wish
-	WinActivate Confirm BIOS Replacement, Do you wish
-	Send {Enter}
-	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
-	ExitApp
-}
-else if (Model = "3330")
-{
-	If InStr(SystemInfo, "Dell Inc. A10")
-	{
-		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
-		gosub 4-Activate
-	}
-	Run %MyDir%\Dell-3330\3330A10.exe
-	WinWait BIOS Update Program, utility will update the system
-	WinActivate BIOS Update Program, utility will update the system
-	Send {Enter}
-	WinWait Confirm BIOS Replacement, Do you wish
-	WinActivate Confirm BIOS Replacement, Do you wish
-	Send {Enter}
-	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if (Model = "7250")
@@ -426,38 +303,44 @@ else if (Model = "7250")
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	Run %MyDir%\Dell-7240\E7250A21.exe
-	WinWait BIOS Update Program, utility will update the system
-	WinActivate BIOS Update Program, utility will update the system
-	Send {Enter}
-	WinWait Confirm BIOS Replacement, Do you wish
-	WinActivate Confirm BIOS Replacement, Do you wish
-	Send {Enter}
+	Run E7250A21.exe /s /r /l="%A_Temp%\BIOS-Update.log", %MyDir%\Dell-7240
+	Gosub, myGui
+	; WinWait BIOS Update Program, utility will update the system
+	; WinActivate BIOS Update Program, utility will update the system
+	; Send {Enter}
+	; WinWait Confirm BIOS Replacement, Do you wish
+	; WinActivate Confirm BIOS Replacement, Do you wish
+	; Send {Enter}
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if InStr(SystemInfo, "Folio 1040 G2")
 {
-	If InStr(SystemInfo, "Ver. 01.17")
+	If InStr(SystemInfo, "Ver. 01.19")
 	{
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
-	Run %MyDir%\HP-1040\G2\BIOS\HPBIOSUPDREC.exe
+	; MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
+	Gosub, myGui
+	Run HPBIOSUPDREC.exe -s -fM76_0119.bin -pPass.bin, %MyDir%\HP-1040\G2\BIOS
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if InStr(SystemInfo, "Folio 1040 G3")
 {
-	If InStr(SystemInfo, "Ver. 01.42")
+	If InStr(SystemInfo, "Ver. 01.52")
 	{
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
-	Run %MyDir%\HP-1040\G3\BIOS\HPBIOSUPDREC.exe
+	; MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
+	Gosub, myGui
+	Run HPBIOSUPDREC.exe -s -fN83_0152.bin -pPass.bin, %MyDir%\HP-1040\G3\BIOS
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if (Model = "800g1")
@@ -467,46 +350,69 @@ else if (Model = "800g1")
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
-	Run %MyDir%\HP-800\G1\BIOS\HpqFlash.exe
+	Run HpqFlash.exe -fROM.CAB -pPass.bin -s -h, %MyDir%\HP-800\G1\BIOS
+	Gosub, myGui
+	proc := "HpqFlash.exe"
+	Gosub, procWait
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	Run shutdown.exe /r /f /t 00
 	ExitApp
 }
 else if (Model = "800g2")
 {
-	if InStr(SystemInfo, "Ver. 02.44")
+	if InStr(SystemInfo, "Ver. 02.53")
 	{
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
-	Run %MyDir%\HP-800\G2\BIOS\HPBIOSUPDREC.exe
+	; MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
+	Gosub, myGui
+	Run HPBIOSUPDREC.exe -s -fN21_0253.bin -pPass.bin, %MyDir%\HP-800\G2\BIOS
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if (Model = "800g3")
 {
-	if InStr(SystemInfo, "Ver. 02.31")
+	if InStr(SystemInfo, "Ver. 02.38")
 	{
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
-	Run %MyDir%\HP-800\G3\BIOS\HPBIOSUPDREC.exe
+	; MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
+	Gosub, myGui
+	Run HPBIOSUPDREC.exe -s -fP21_0238.bin -pPass.bin, %MyDir%\HP-800\G3\BIOS
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
 }
 else if (Model = "800g4")
 {
-	if InStr(SystemInfo, "Ver. 02.09.01")
+	if InStr(SystemInfo, "Ver. 02.16.00")
 	{
 		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 		gosub 4-Activate
 	}
-	MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
-	Run %MyDir%\HP-800\G4\BIOS\HpFirmwareUpdRec.exe
+	; MsgBox, 48, Update BIOS, The BIOS needs to be updated.  Press OK and I'll start it for you and you'll need to finish it.  `n`nAfter the restart`, I'll take care of the rest.
+	Gosub, myGui
+	Run HpFirmwareUpdRec.exe -s -fQ21_021600.bin -pPass.bin, %MyDir%\HP-800\G4\BIOS
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
 	ExitApp
+}
+else if (Model = "360G2")
+{
+	if InStr(SystemInfo, "P80 Ver. 01.39")
+	{
+		RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+		gosub 4-Activate
+	}
+	Gosub, myGui
+	Run HpFirmwareUpdRec.exe -s -pPass.bin -fP80_0139.bin, %MyDir%\HP-x360\G2\BIOS 1.39
+	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
+	WinWaitClose, Notification
+	ExitApp
+
 }
 gosub 4-Activate
 
@@ -672,3 +578,24 @@ ExitApp
 
 CapsLock::
 ExitApp
+
+myGui:
+Gui, Font, s20
+Gui,Add,Text,x19 y14 w350 h150 Center, The BIOS is silently being updated in the background and the computer will restart automatically.
+Gui,Show,x1050 y469 w391 h175 , Notification
+Return
+
+GuiClose:
+Gui, Destroy
+Return
+
+procWait:
+Loop
+{
+	Sleep 1000
+	Process, Exist, %proc%
+	If (ErrorLevel != 0)
+		Continue
+	Break
+}
+Return
