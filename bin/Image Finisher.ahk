@@ -2,7 +2,7 @@
 #NoEnv
 
 D := SubStr(A_ScriptFullPath, 1, 1)
-version := "v2021.10.27"
+version := "v2022.02.09"
 Title := "Image Finisher " version
 SetTitleMatchMode Slow
 MyDir := D ":\Files"
@@ -170,24 +170,7 @@ If InStr(SystemInfo, "Windows 10")
 		}
 	}
 	
-	Loop, Files, %D%:\*, FR
-		{
-			if (A_LoopFileName != "kb4517389.msu")
-				continue
-			else
-			{
-				Run %A_LoopFileFullPath% ; install Windows Update to allow BIOS to update
-				break
-			}
-		}
-	WinWait Windows Update, &Yes
-	WinActivate Windows Update
-	Sleep 1000
-	Send {Enter}
-	WinWait Download and Install, Restart Now
-	WinActivate Download and Install
-	Sleep 1000
-	Send {Tab}{Enter}
+	Gosub, 3-BIOS
 }
 
 If InStr(SystemInfo, "Windows 7")

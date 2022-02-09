@@ -1,4 +1,7 @@
 Version Notes
+2022.02.09
+	Removed the manual Windows update since it's not necessary anymore and breaks the process
+
 2021.10.27
 	Removed support for the following models
 		Dell Latitude 3330
