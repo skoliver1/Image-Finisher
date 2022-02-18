@@ -391,7 +391,7 @@ else if (Model = "360G2")
 		gosub 4-Activate
 	}
 	Gosub, myGui
-	Run HpFirmwareUpdRec.exe -s -pPass.bin -fP80_0139.bin, %MyDir%\HP-x360\G2\BIOS 1.39
+	Run HPBIOSUPDREC.exe -s -pPass.bin -fP80_0139.bin, %MyDir%\HP-x360\G2\BIOS 1.39
 	RegWrite REG_SZ, HKCU, Software\OSteve Productions, LastDone, 4
 	WinWaitClose, Notification
 	ExitApp
